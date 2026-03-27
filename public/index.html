@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>제이씨드 | JEONGSEED — 솔로프리너를 위한 도구</title>
+  <meta name="description" content="콘텐츠 크리에이터를 위한 올인원 도구. 릴스 대본, 숏폼 자동화, 카드뉴스, 원클릭 AI 세팅까지.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-300: #d4d4d4;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-700: #404040;
+      --gray-800: #262626;
+      --gray-900: #171717;
+      --accent: #e5e5e5;
+      --font-main: 'Inter', 'Noto Sans KR', -apple-system, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: var(--font-main);
+      color: var(--gray-900);
+      background: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 20px 0;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav.scrolled {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      padding: 14px 0;
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--black);
+    }
+
+    .nav-logo span {
+      font-weight: 300;
+      color: var(--gray-500);
+      font-size: 0.75rem;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      align-items: center;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray-600);
+      transition: color 0.2s;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-links a:hover { color: var(--black); }
+
+    .nav-cta {
+      background: var(--black) !important;
+      color: var(--white) !important;
+      padding: 10px 24px !important;
+      border-radius: 6px;
+      font-weight: 600 !important;
+      font-size: 0.875rem !important;
+      transition: opacity 0.2s !important;
+    }
+
+    .nav-cta:hover { opacity: 0.85; }
+
+    .nav-mobile-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      padding: 4px;
+    }
+
+    .nav-mobile-toggle span {
+      width: 22px;
+      height: 2px;
+      background: var(--black);
+      transition: all 0.3s;
+    }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background: var(--gray-50);
+    }
+
+    .hero-video-bg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: hidden;
+    }
+
+    .hero-video-bg video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.15;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(180deg, rgba(250,250,250,0.3) 0%, rgba(250,250,250,0.95) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding-top: 140px;
+      padding-bottom: 100px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 100px;
+      padding: 6px 16px 6px 10px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--gray-600);
+      margin-bottom: 32px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .hero-badge-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 5.5vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+      color: var(--black);
+      margin-bottom: 24px;
+      max-width: 800px;
+    }
+
+    .hero h1 .highlight {
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero h1 .highlight::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      width: 100%;
+      height: 12px;
+      background: rgba(0,0,0,0.07);
+      z-index: -1;
+      border-radius: 2px;
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      color: var(--gray-500);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--black);
+      color: var(--white);
+      padding: 16px 32px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      letter-spacing: -0.01em;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
+
+    .btn-primary svg {
+      transition: transform 0.3s;
+    }
+
+    .btn-primary:hover svg {
+      transform: translateX(4px);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gray-600);
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 16px 24px;
+      border-radius: 8px;
+      border: 1px solid var(--gray-200);
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--gray-400);
+      color: var(--black);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 60px;
+      margin-top: 80px;
+      padding-top: 40px;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .hero-stat-item h3 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--black);
+      letter-spacing: -0.03em;
+    }
+
+    .hero-stat-item p {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+      margin-top: 4px;
+      font-weight: 400;
+    }
+
+    /* ===== SECTION COMMON ===== */
+    .section {
+      padding: 140px 0;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--gray-400);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: var(--black);
+      margin-bottom: 20px;
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--gray-500);
+      max-width: 560px;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    /* ===== ABOUT SECTION ===== */
+    .about {
+      background: var(--white);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-image {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      aspect-ratio: 4/5;
+      background: var(--gray-100);
+    }
+
+    .about-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .about-image-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 32px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.7));
+      color: var(--white);
+    }
+
+    .about-image-overlay h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .about-image-overlay p {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+
+    .about-content .section-desc {
+      margin-bottom: 40px;
+    }
+
+    .about-features {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .about-feature {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .about-feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+
+    .about-feature-text h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 2px;
+    }
+
+    .about-feature-text p {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+      line-height: 1.5;
+    }
+
+    /* ===== SERVICES SECTION ===== */
+    .services {
+      background: var(--gray-50);
+    }
+
+    .services-header {
+      margin-bottom: 64px;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .service-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 40px 32px;
+      border: 1px solid var(--gray-200);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+      border-color: var(--gray-300);
+    }
+
+    .service-card-number {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--gray-300);
+      letter-spacing: 0.05em;
+      margin-bottom: 24px;
+    }
+
+    .service-card-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: var(--gray-900);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      font-size: 1.5rem;
+    }
+
+    .service-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .service-card p {
+      font-size: 0.9rem;
+      color: var(--gray-500);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .service-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .service-tag {
+      font-size: 0.75rem;
+      padding: 4px 12px;
+      border-radius: 100px;
+      background: var(--gray-100);
+      color: var(--gray-600);
+      font-weight: 500;
+    }
+
+    .service-card.featured {
+      grid-column: span 2;
+      background: var(--gray-900);
+      border-color: var(--gray-800);
+    }
+
+    .service-card.featured h3,
+    .service-card.featured p {
+      color: var(--white);
+    }
+
+    .service-card.featured p { opacity: 0.7; }
+
+    .service-card.featured .service-card-number {
+      color: var(--gray-600);
+    }
+
+    .service-card.featured .service-card-icon {
+      background: var(--white);
+    }
+
+    .service-card.featured .service-tag {
+      background: var(--gray-800);
+      color: var(--gray-400);
+    }
+
+    /* ===== RESULTS / STATS SECTION ===== */
+    .results {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .results .section-label { color: var(--gray-600); }
+    .results .section-title { color: var(--white); }
+    .results .section-desc { color: var(--gray-500); }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+      margin-top: 80px;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 40px 20px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .stat-number {
+      font-size: 3.2rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+      font-weight: 400;
+    }
+
+    /* ===== INTERACTIVE VIDEO SECTION ===== */
+    .video-section {
+      background: var(--white);
+      text-align: center;
+    }
+
+    .video-wrapper {
+      position: relative;
+      max-width: 960px;
+      margin: 60px auto 0;
+      border-radius: 20px;
+      overflow: hidden;
+      background: var(--gray-900);
+      aspect-ratio: 16/9;
+      cursor: pointer;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.15);
+    }
+
+    .video-wrapper video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .video-play-btn:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .video-play-btn svg {
+      width: 24px;
+      height: 24px;
+      margin-left: 4px;
+    }
+
+    .video-wrapper.playing .video-play-btn {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ===== TOOLS SHOWCASE ===== */
+    .tools {
+      background: var(--gray-50);
+    }
+
+    .tools-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .tools-header .section-desc {
+      margin: 0 auto;
+    }
+
+    .tools-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .tool-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 32px;
+      background: var(--white);
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .tool-item:hover {
+      border-color: var(--gray-300);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      transform: translateX(4px);
+    }
+
+    .tool-item-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .tool-item-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--gray-900);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .tool-item h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 2px;
+    }
+
+    .tool-item p {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+    }
+
+    .tool-item-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 100px;
+      background: var(--gray-100);
+      color: var(--gray-600);
+      white-space: nowrap;
+    }
+
+    .tool-item-badge.new {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    /* ===== FAQ SECTION ===== */
+    .faq {
+      background: var(--white);
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--gray-200);
+      overflow: hidden;
+    }
+
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 0;
+      width: 100%;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--black);
+      text-align: left;
+      transition: color 0.2s;
+    }
+
+    .faq-question:hover { color: var(--gray-600); }
+
+    .faq-icon {
+      width: 24px;
+      height: 24px;
+      position: relative;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+    }
+
+    .faq-icon::before,
+    .faq-icon::after {
+      content: '';
+      position: absolute;
+      background: var(--gray-400);
+      border-radius: 1px;
+    }
+
+    .faq-icon::before {
+      width: 14px;
+      height: 2px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .faq-icon::after {
+      width: 2px;
+      height: 14px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: transform 0.3s;
+    }
+
+    .faq-item.active .faq-icon::after {
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .faq-answer-inner {
+      padding-bottom: 24px;
+      font-size: 0.9rem;
+      color: var(--gray-500);
+      line-height: 1.7;
+    }
+
+    /* ===== CTA SECTION ===== */
+    .cta-section {
+      background: var(--gray-900);
+      text-align: center;
+      padding: 120px 0;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .cta-section p {
+      font-size: 1.05rem;
+      color: var(--gray-500);
+      margin-bottom: 40px;
+    }
+
+    .cta-form {
+      display: flex;
+      gap: 12px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .cta-form input {
+      flex: 1;
+      padding: 16px 20px;
+      border-radius: 8px;
+      border: 1px solid var(--gray-700);
+      background: var(--gray-800);
+      color: var(--white);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .cta-form input::placeholder { color: var(--gray-600); }
+    .cta-form input:focus { border-color: var(--gray-500); }
+
+    .cta-form button {
+      padding: 16px 28px;
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--black);
+      font-size: 0.95rem;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+
+    .cta-form button:hover { opacity: 0.9; }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: var(--black);
+      color: var(--gray-500);
+      padding: 60px 0 40px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+    }
+
+    .footer-brand h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .footer-brand p {
+      font-size: 0.8rem;
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 48px;
+    }
+
+    .footer-col h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gray-400);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-col a {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      transition: color 0.2s;
+    }
+
+    .footer-col a:hover { color: var(--white); }
+
+    .footer-bottom {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--gray-700);
+    }
+
+    /* ===== SCROLL ANIMATIONS ===== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fade-up-delay-1 { transition-delay: 0.1s; }
+    .fade-up-delay-2 { transition-delay: 0.2s; }
+    .fade-up-delay-3 { transition-delay: 0.3s; }
+    .fade-up-delay-4 { transition-delay: 0.4s; }
+    .fade-up-delay-5 { transition-delay: 0.5s; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .container { padding: 0 24px; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .service-card.featured { grid-column: span 2; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .about-grid { gap: 48px; }
+      .faq-grid { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-mobile-toggle { display: flex; }
+
+      .hero-content { padding-top: 120px; }
+      .hero h1 { font-size: 2.4rem; }
+      .hero-stats { flex-direction: column; gap: 24px; }
+      .hero-actions { flex-direction: column; align-items: flex-start; }
+
+      .about-grid { grid-template-columns: 1fr; }
+      .about-image { max-height: 400px; }
+
+      .services-grid { grid-template-columns: 1fr; }
+      .service-card.featured { grid-column: span 1; }
+
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+      .stat-number { font-size: 2.4rem; }
+
+      .cta-form { flex-direction: column; }
+
+      .footer-inner { flex-direction: column; gap: 40px; }
+      .footer-bottom { flex-direction: column; gap: 8px; }
+
+      .section { padding: 80px 0; }
+    }
+
+    /* ===== MOBILE NAV MENU ===== */
+    .nav-mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(20px);
+      z-index: 999;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-mobile-menu.open { display: flex; }
+
+    .nav-mobile-menu a {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--black);
+    }
+
+    .nav-mobile-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      font-size: 1.5rem;
+      color: var(--black);
+    }
+
+    /* ===== MARQUEE ===== */
+    .marquee-section {
+      padding: 40px 0;
+      background: var(--white);
+      overflow: hidden;
+      border-top: 1px solid var(--gray-100);
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 60px;
+      animation: marquee 30s linear infinite;
+      white-space: nowrap;
+    }
+
+    .marquee-item {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gray-300);
+      letter-spacing: -0.01em;
+      flex-shrink: 0;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="container nav-inner">
+      <a href="#" class="nav-logo">JEONGSEED<span>by 제이씨드</span></a>
+      <ul class="nav-links">
+        <li><a href="#about">소개</a></li>
+        <li><a href="#services">서비스</a></li>
+        <li><a href="#tools">도구</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contact" class="nav-cta">시작하기</a></li>
+      </ul>
+      <button class="nav-mobile-toggle" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="nav-mobile-menu" id="mobileMenu">
+    <button class="nav-mobile-close" onclick="toggleMobileMenu()">&times;</button>
+    <a href="#about" onclick="toggleMobileMenu()">소개</a>
+    <a href="#services" onclick="toggleMobileMenu()">서비스</a>
+    <a href="#tools" onclick="toggleMobileMenu()">도구</a>
+    <a href="#faq" onclick="toggleMobileMenu()">FAQ</a>
+    <a href="#contact" onclick="toggleMobileMenu()">시작하기</a>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-video-bg">
+      <video autoplay muted loop playsinline>
+        <source src="https://cdn.coverr.co/videos/coverr-typing-on-a-laptop-5765/1080p.mp4" type="video/mp4">
+      </video>
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="container hero-content">
+      <div class="hero-badge fade-up">
+        <span class="hero-badge-dot"></span>
+        현재 사전 등록 진행 중
+      </div>
+      <h1 class="fade-up fade-up-delay-1">
+        콘텐츠 크리에이터를 위한<br>
+        <span class="highlight">올인원 도구</span>
+      </h1>
+      <p class="hero-desc fade-up fade-up-delay-2">
+        릴스 대본 추출부터 숏폼 자동화, 카드뉴스 생성, 세금계산서까지.
+        솔로프리너에게 필요한 모든 것을 한 곳에서.
+      </p>
+      <div class="hero-actions fade-up fade-up-delay-3">
+        <a href="#contact" class="btn-primary">
+          사전 등록하기
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a href="#video" class="btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          영상 보기
+        </a>
+      </div>
+      <div class="hero-stats fade-up fade-up-delay-4">
+        <div class="hero-stat-item">
+          <h3><span class="counter" data-target="2847">0</span>+</h3>
+          <p>릴코노미 수강생</p>
+        </div>
+        <div class="hero-stat-item">
+          <h3><span class="counter" data-target="150">0</span>K+</h3>
+          <p>생성된 대본</p>
+        </div>
+        <div class="hero-stat-item">
+          <h3><span class="counter" data-target="98">0</span>%</h3>
+          <p>만족도</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <span class="marquee-item">릴스 대본 추출</span>
+      <span class="marquee-item">&mdash;</span>
+      <span class="marquee-item">릴스 대본 생성</span>
+      <span class="marquee-item">&mdash;</span>
+      <span class="marquee-item">숏폼 영상 자동화</span>
+      <span class="marquee-item">&mdash;</span>
+      <span class="marquee-item">카드뉴스 생성</span>
+      <span class="marquee-item">&mdash;</span>
+      <span class="marquee-item">세금계산서 발행</span>
+      <span class="marquee-item">&mdash;</span>
+      <span class="marquee-item">원클릭 AI 세팅</span>
+      <span class="marquee-item">&mdash;</span>
+      <span class="marquee-item">Claude Code 설치</span>
+      <span class="marquee-item">&mdash;</span>
+      <span class="marquee-item">릴스 대본 추출</span>
+      <span class="marquee-item">&mdash;</span>
+      <span class="marquee-item">릴스 대본 생성</span>
+      <span class="marquee-item">&mdash;</span>
+      <span class="marquee-item">숏폼 영상 자동화</span>
+      <span class="marquee-item">&mdash;</span>
+      <span class="marquee-item">카드뉴스 생성</span>
+      <span class="marquee-item">&mdash;</span>
+      <span class="marquee-item">세금계산서 발행</span>
+      <span class="marquee-item">&mdash;</span>
+      <span class="marquee-item">원클릭 AI 세팅</span>
+      <span class="marquee-item">&mdash;</span>
+      <span class="marquee-item">Claude Code 설치</span>
+      <span class="marquee-item">&mdash;</span>
+    </div>
+  </div>
+
+  <!-- About Section -->
+  <section class="section about" id="about">
+    <div class="container about-grid">
+      <div class="about-image fade-up">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#e5e7eb 0%,#d1d5db 50%,#9ca3af 100%);display:flex;align-items:center;justify-content:center;">
+          <div style="text-align:center;color:#6b7280;">
+            <div style="font-size:4rem;font-weight:900;letter-spacing:-0.04em;color:#374151;">JC</div>
+            <div style="font-size:0.85rem;margin-top:8px;">JEONGSEED</div>
+          </div>
+        </div>
+        <div class="about-image-overlay">
+          <h4>제이씨드</h4>
+          <p>콘텐츠 크리에이터 & 솔로프리너</p>
+        </div>
+      </div>
+      <div class="about-content">
+        <div class="section-label fade-up">ABOUT</div>
+        <h2 class="section-title fade-up fade-up-delay-1">혼자서도 전부<br>만들 수 있다는 것을<br>증명합니다</h2>
+        <p class="section-desc fade-up fade-up-delay-2">
+          릴코노미를 통해 2,800명 이상의 크리에이터를 교육하고,
+          직접 쓰면서 만든 도구들을 이제 공개합니다.
+          AI 티 나지 않는, 진짜 실무에서 쓰는 도구.
+        </p>
+        <div class="about-features fade-up fade-up-delay-3">
+          <div class="about-feature">
+            <div class="about-feature-icon">01</div>
+            <div class="about-feature-text">
+              <h4>직접 만들고 직접 씁니다</h4>
+              <p>본인이 매일 사용하는 도구만 서비스로 제공합니다</p>
+            </div>
+          </div>
+          <div class="about-feature">
+            <div class="about-feature-icon">02</div>
+            <div class="about-feature-text">
+              <h4>교육에서 도구까지</h4>
+              <p>릴코노미에서 배운 것을 바로 실행할 수 있는 환경</p>
+            </div>
+          </div>
+          <div class="about-feature">
+            <div class="about-feature-icon">03</div>
+            <div class="about-feature-text">
+              <h4>원클릭 세팅</h4>
+              <p>구독 하나로 모든 도구를 바로 사용 가능</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="section services" id="services">
+    <div class="container">
+      <div class="services-header">
+        <div class="section-label fade-up">SERVICES</div>
+        <h2 class="section-title fade-up fade-up-delay-1">솔로프리너에게 필요한<br>모든 도구, 한 곳에</h2>
+        <p class="section-desc fade-up fade-up-delay-2">AI 티 나지 않는, 실무에 바로 쓸 수 있는 도구들</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card featured fade-up">
+          <div class="service-card-number">001</div>
+          <div class="service-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <h3>릴스 대본 추출 & 생성</h3>
+          <p>영상 URL만 넣으면 대본이 추출되고, 주제만 입력하면 릴스에 최적화된 대본이 자동 생성됩니다. 2,800명이 검증한 대본 구조.</p>
+          <div class="service-card-tags">
+            <span class="service-tag">대본 추출</span>
+            <span class="service-tag">대본 생성</span>
+            <span class="service-tag">훅 분석</span>
+            <span class="service-tag">CTA 최적화</span>
+          </div>
+        </div>
+        <div class="service-card fade-up fade-up-delay-1">
+          <div class="service-card-number">002</div>
+          <div class="service-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/></svg>
+          </div>
+          <h3>숏폼 영상 자동화</h3>
+          <p>대본만 있으면 영상을 자동으로 제작합니다. 자막, 화면 전환, BGM까지 원스톱.</p>
+          <div class="service-card-tags">
+            <span class="service-tag">자동 편집</span>
+            <span class="service-tag">자막 생성</span>
+            <span class="service-tag">BGM</span>
+          </div>
+        </div>
+        <div class="service-card fade-up fade-up-delay-2">
+          <div class="service-card-number">003</div>
+          <div class="service-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <h3>카드뉴스 생성</h3>
+          <p>주제만 입력하면 인스타그램에 바로 올릴 수 있는 카드뉴스가 완성됩니다.</p>
+          <div class="service-card-tags">
+            <span class="service-tag">자동 디자인</span>
+            <span class="service-tag">인스타 최적화</span>
+            <span class="service-tag">브랜딩</span>
+          </div>
+        </div>
+        <div class="service-card fade-up fade-up-delay-1">
+          <div class="service-card-number">004</div>
+          <div class="service-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="M9 15h6"/></svg>
+          </div>
+          <h3>세금계산서 발행</h3>
+          <p>거래처 정보만 입력하면 세금계산서가 자동 발행됩니다. 솔로프리너의 세무 고민 해결.</p>
+          <div class="service-card-tags">
+            <span class="service-tag">자동 발행</span>
+            <span class="service-tag">거래처 관리</span>
+          </div>
+        </div>
+        <div class="service-card fade-up fade-up-delay-2">
+          <div class="service-card-number">005</div>
+          <div class="service-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3>원클릭 AI 세팅</h3>
+          <p>Claude Code, 오픈클로 등 해외 유명 AI 도구를 구독 하나로 자동 설치 & 세팅합니다.</p>
+          <div class="service-card-tags">
+            <span class="service-tag">Claude Code</span>
+            <span class="service-tag">자동 설치</span>
+            <span class="service-tag">원클릭</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Section -->
+  <section class="section video-section" id="video">
+    <div class="container">
+      <div class="section-label fade-up">HOW IT WORKS</div>
+      <h2 class="section-title fade-up fade-up-delay-1" style="text-align:center;">어떻게 작동하는지<br>직접 보세요</h2>
+      <div class="video-wrapper fade-up fade-up-delay-2" id="videoWrapper">
+        <video id="demoVideo" poster="" preload="metadata">
+          <source src="https://cdn.coverr.co/videos/coverr-working-on-laptop-at-desk-1584/1080p.mp4" type="video/mp4">
+        </video>
+        <button class="video-play-btn" id="videoPlayBtn">
+          <svg viewBox="0 0 24 24" fill="#000"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats / Results Section -->
+  <section class="section results" id="results">
+    <div class="container">
+      <div class="section-label fade-up">RESULTS</div>
+      <h2 class="section-title fade-up fade-up-delay-1">숫자가 증명합니다</h2>
+      <p class="section-desc fade-up fade-up-delay-2">릴코노미에서 시작된 도구, 실전에서 검증된 성과</p>
+      <div class="stats-grid">
+        <div class="stat-card fade-up">
+          <div class="stat-number"><span class="counter" data-target="2847">0</span>+</div>
+          <div class="stat-label">릴코노미 수강생</div>
+        </div>
+        <div class="stat-card fade-up fade-up-delay-1">
+          <div class="stat-number"><span class="counter" data-target="150">0</span>K+</div>
+          <div class="stat-label">생성된 대본 수</div>
+        </div>
+        <div class="stat-card fade-up fade-up-delay-2">
+          <div class="stat-number"><span class="counter" data-target="47">0</span>+</div>
+          <div class="stat-label">제공 AI 도구</div>
+        </div>
+        <div class="stat-card fade-up fade-up-delay-3">
+          <div class="stat-number"><span class="counter" data-target="98">0</span>%</div>
+          <div class="stat-label">사용자 만족도</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tools / One-Click Install Section -->
+  <section class="section tools" id="tools">
+    <div class="container">
+      <div class="tools-header">
+        <div class="section-label fade-up">ONE-CLICK SETUP</div>
+        <h2 class="section-title fade-up fade-up-delay-1">원클릭 설치</h2>
+        <p class="section-desc fade-up fade-up-delay-2">해외 유명 AI 도구들을 버튼 하나로 설치하고 세팅합니다</p>
+      </div>
+      <div class="tools-list">
+        <div class="tool-item fade-up">
+          <div class="tool-item-left">
+            <div class="tool-item-icon">CC</div>
+            <div>
+              <h4>Claude Code</h4>
+              <p>Anthropic의 AI 코딩 어시스턴트 원클릭 설치</p>
+            </div>
+          </div>
+          <span class="tool-item-badge new">원클릭 설치</span>
+        </div>
+        <div class="tool-item fade-up fade-up-delay-1">
+          <div class="tool-item-left">
+            <div class="tool-item-icon" style="background:#6366f1;">OC</div>
+            <div>
+              <h4>OpenClaw</h4>
+              <p>오픈소스 AI 에이전트 프레임워크 세팅</p>
+            </div>
+          </div>
+          <span class="tool-item-badge new">원클릭 설치</span>
+        </div>
+        <div class="tool-item fade-up fade-up-delay-2">
+          <div class="tool-item-left">
+            <div class="tool-item-icon" style="background:#059669;">RS</div>
+            <div>
+              <h4>Reels Scribe</h4>
+              <p>릴스 대본 추출 & 분석 도구</p>
+            </div>
+          </div>
+          <span class="tool-item-badge">곧 출시</span>
+        </div>
+        <div class="tool-item fade-up fade-up-delay-3">
+          <div class="tool-item-left">
+            <div class="tool-item-icon" style="background:#dc2626;">SF</div>
+            <div>
+              <h4>ShortForm Auto</h4>
+              <p>숏폼 영상 자동 제작 파이프라인</p>
+            </div>
+          </div>
+          <span class="tool-item-badge">곧 출시</span>
+        </div>
+        <div class="tool-item fade-up fade-up-delay-4">
+          <div class="tool-item-left">
+            <div class="tool-item-icon" style="background:#f59e0b;">CN</div>
+            <div>
+              <h4>CardNews Gen</h4>
+              <p>카드뉴스 자동 생성기</p>
+            </div>
+          </div>
+          <span class="tool-item-badge">곧 출시</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="section faq" id="faq">
+    <div class="container faq-grid">
+      <div>
+        <div class="section-label fade-up">FAQ</div>
+        <h2 class="section-title fade-up fade-up-delay-1">자주 묻는<br>질문</h2>
+        <p class="section-desc fade-up fade-up-delay-2">궁금한 점이 더 있다면 언제든 문의해주세요.</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item fade-up">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            어떤 도구들을 사용할 수 있나요?
+            <span class="faq-icon"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              릴스 대본 추출/생성, 숏폼 영상 자동화, 카드뉴스 생성, 세금계산서 발행, 그리고 Claude Code와 OpenClaw 등 해외 AI 도구 원클릭 설치까지 지원합니다. 지속적으로 새로운 도구가 추가됩니다.
+            </div>
+          </div>
+        </div>
+        <div class="faq-item fade-up fade-up-delay-1">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            릴코노미 수강생이 아니어도 사용할 수 있나요?
+            <span class="faq-icon"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              네, 누구나 사용 가능합니다. 다만 릴코노미 수강생은 도구 활용 교육을 함께 받으실 수 있어 더 효과적으로 사용하실 수 있습니다.
+            </div>
+          </div>
+        </div>
+        <div class="faq-item fade-up fade-up-delay-2">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            원클릭 설치는 정말 한 번에 되나요?
+            <span class="faq-icon"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              네, 구독 후 대시보드에서 원하는 도구의 '설치' 버튼만 누르면 자동으로 설치와 초기 세팅이 완료됩니다. 기술적 지식이 전혀 필요 없습니다.
+            </div>
+          </div>
+        </div>
+        <div class="faq-item fade-up fade-up-delay-3">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            가격은 어떻게 되나요?
+            <span class="faq-icon"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              현재 사전 등록 중이며, 사전 등록자에게는 특별 할인이 제공됩니다. 정식 출시 시 구독 요금제가 안내될 예정입니다.
+            </div>
+          </div>
+        </div>
+        <div class="faq-item fade-up fade-up-delay-4">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            제이씨드가 직접 만든 건가요?
+            <span class="faq-icon"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              네, 모든 도구는 제이씨드가 직접 기획하고 개발했습니다. 본인이 매일 실무에서 사용하는 도구들을 서비스화한 것이기 때문에 실용성이 검증되어 있습니다.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section" id="contact">
+    <div class="container">
+      <h2 class="fade-up">사전 등록하고<br>가장 먼저 시작하세요</h2>
+      <p class="fade-up fade-up-delay-1">사전 등록자에게 특별 할인과 얼리 액세스를 제공합니다.</p>
+      <form class="cta-form fade-up fade-up-delay-2" onsubmit="handleSubmit(event)">
+        <input type="email" placeholder="이메일을 입력하세요" required>
+        <button type="submit">사전 등록</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <h3>JEONGSEED</h3>
+          <p>솔로프리너를 위한 올인원 도구<br>by 제이씨드 | 트렌더스</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>서비스</h4>
+            <ul>
+              <li><a href="#services">릴스 대본</a></li>
+              <li><a href="#services">숏폼 자동화</a></li>
+              <li><a href="#services">카드뉴스</a></li>
+              <li><a href="#tools">원클릭 설치</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>링크</h4>
+            <ul>
+              <li><a href="https://reelconomy.co.kr" target="_blank">릴코노미</a></li>
+              <li><a href="https://trenders.kr" target="_blank">트렌더스</a></li>
+              <li><a href="#faq">FAQ</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>연락</h4>
+            <ul>
+              <li><a href="mailto:info@trenders.kr">info@trenders.kr</a></li>
+              <li><a href="https://instagram.com/jeongseed" target="_blank">Instagram</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 JEONGSEED. All rights reserved.</span>
+        <span>Powered by Trenders</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ===== Navigation Scroll =====
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ===== Mobile Menu =====
+    function toggleMobileMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    // ===== FAQ Accordion =====
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const answer = item.querySelector('.faq-answer');
+      const isActive = item.classList.contains('active');
+
+      // Close all
+      document.querySelectorAll('.faq-item').forEach(i => {
+        i.classList.remove('active');
+        i.querySelector('.faq-answer').style.maxHeight = '0';
+      });
+
+      // Open clicked if not already active
+      if (!isActive) {
+        item.classList.add('active');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    }
+
+    // ===== Counter Animation =====
+    function animateCounters() {
+      const counters = document.querySelectorAll('.counter');
+      counters.forEach(counter => {
+        if (counter.dataset.animated) return;
+
+        const rect = counter.getBoundingClientRect();
+        if (rect.top > window.innerHeight || rect.bottom < 0) return;
+
+        counter.dataset.animated = 'true';
+        const target = parseInt(counter.dataset.target);
+        const duration = 2000;
+        const start = performance.now();
+
+        function update(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          counter.textContent = Math.floor(eased * target).toLocaleString();
+          if (progress < 1) requestAnimationFrame(update);
+        }
+
+        requestAnimationFrame(update);
+      });
+    }
+
+    // ===== Scroll Animations =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Counter observer
+    window.addEventListener('scroll', animateCounters);
+    animateCounters();
+
+    // ===== Video Player =====
+    const videoWrapper = document.getElementById('videoWrapper');
+    const demoVideo = document.getElementById('demoVideo');
+    const videoPlayBtn = document.getElementById('videoPlayBtn');
+
+    videoWrapper?.addEventListener('click', () => {
+      if (demoVideo.paused) {
+        demoVideo.play();
+        videoWrapper.classList.add('playing');
+      } else {
+        demoVideo.pause();
+        videoWrapper.classList.remove('playing');
+      }
+    });
+
+    // ===== Form Submit =====
+    function handleSubmit(e) {
+      e.preventDefault();
+      const email = e.target.querySelector('input').value;
+      alert('감사합니다! ' + email + '로 소식을 보내드리겠습니다.');
+      e.target.reset();
+    }
+
+    // ===== Smooth scroll for anchor links =====
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
