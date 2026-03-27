@@ -1,7 +1,73 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+
+/* ===== INTRO SPLASH ===== */
+function IntroSplash({ onDone }: { onDone: () => void }) {
+  const [phase, setPhase] = useState<"logo" | "spread" | "done">("logo");
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase("spread"), 1400);
+    const t2 = setTimeout(() => {
+      setPhase("done");
+      onDone();
+    }, 2200);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [onDone]);
+
+  if (phase === "done") return null;
+
+  return (
+    <div
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-[var(--black)] transition-opacity duration-700 ${
+        phase === "spread" ? "opacity-0" : "opacity-100"
+      }`}
+    >
+      <div className={`text-center transition-all duration-700 ${phase === "spread" ? "scale-150 opacity-0" : ""}`}>
+        <div
+          className="text-5xl md:text-7xl font-[900] tracking-[-0.04em] text-white opacity-0 translate-y-6"
+          style={{ animation: "introFadeUp 0.8s 0.2s forwards" }}
+        >
+          JEONGSEED
+        </div>
+        <div
+          className="text-sm md:text-base text-[var(--gray-500)] mt-3 opacity-0"
+          style={{ animation: "introFadeIn 0.6s 0.7s forwards" }}
+        >
+          솔로프리너를 위한 올인원 AI 도구
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ===== SCROLL FADE-IN ===== */
+function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
 
 function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -30,9 +96,62 @@ function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
   );
 }
 
+function InteractiveVideo() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+
+  const toggle = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) {
+      v.play();
+      setPlaying(true);
+    } else {
+      v.pause();
+      setPlaying(false);
+    }
+  };
+
+  return (
+    <section className="py-28 text-center" id="video">
+      <div className="max-w-[1280px] mx-auto px-10">
+        <div className="text-xs font-semibold tracking-[0.15em] text-[var(--gray-400)] mb-4">HOW IT WORKS</div>
+        <h2 className="text-4xl md:text-5xl font-[800] tracking-[-0.03em] leading-[1.15] text-[var(--black)] mb-4">
+          어떻게 작동하는지<br />직접 보세요
+        </h2>
+        <div
+          className="relative max-w-[960px] mx-auto mt-14 rounded-2xl overflow-hidden bg-[var(--gray-900)] aspect-video cursor-pointer shadow-[0_30px_80px_rgba(0,0,0,0.15)]"
+          onClick={toggle}
+        >
+          <video
+            ref={videoRef}
+            preload="metadata"
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src="https://cdn.coverr.co/videos/coverr-working-on-laptop-at-desk-1584/1080p.mp4" type="video/mp4" />
+          </video>
+          <button
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-white/95 flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition-all hover:scale-110 ${
+              playing ? "opacity-0 pointer-events-none" : ""
+            }`}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#000"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
+  const [introDone, setIntroDone] = useState(false);
+  const handleIntroDone = useCallback(() => setIntroDone(true), []);
+
   return (
     <>
+      <IntroSplash onDone={handleIntroDone} />
+
       {/* ===== NAV ===== */}
       <nav className="fixed top-0 left-0 right-0 z-50 py-5 bg-white/0 backdrop-blur-0 transition-all duration-500 hover:bg-white/90 hover:backdrop-blur-xl">
         <div className="max-w-[1280px] mx-auto px-10 flex justify-between items-center">
@@ -43,6 +162,7 @@ export default function Home() {
           <div className="hidden md:flex gap-9 items-center">
             <a href="#about" className="text-sm font-medium text-[var(--gray-600)] hover:text-[var(--black)] transition-colors">소개</a>
             <a href="#services" className="text-sm font-medium text-[var(--gray-600)] hover:text-[var(--black)] transition-colors">서비스</a>
+            <a href="#video" className="text-sm font-medium text-[var(--gray-600)] hover:text-[var(--black)] transition-colors">영상</a>
             <Link href="/studio" className="text-sm font-medium text-[var(--gray-600)] hover:text-[var(--black)] transition-colors">AI 스튜디오</Link>
             <a href="#contact" className="bg-[var(--black)] text-white px-6 py-2.5 rounded-md font-semibold text-sm hover:opacity-85 transition-opacity">시작하기</a>
           </div>
@@ -57,7 +177,7 @@ export default function Home() {
           </video>
           <div className="absolute inset-0 bg-gradient-to-b from-[rgba(250,250,250,0.3)] to-[rgba(250,250,250,0.95)]" />
         </div>
-        <div className="relative z-10 max-w-[1280px] mx-auto px-10 pt-36 pb-24">
+        <div className={`relative z-10 max-w-[1280px] mx-auto px-10 pt-36 pb-24 transition-all duration-1000 ${introDone ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
           <div className="inline-flex items-center gap-2 bg-white border border-[var(--gray-200)] rounded-full px-4 py-2 text-xs font-medium text-[var(--gray-600)] mb-8">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             AI 스튜디오 오픈
@@ -105,12 +225,15 @@ export default function Home() {
       {/* ===== ABOUT ===== */}
       <section className="py-28" id="about">
         <div className="max-w-[1280px] mx-auto px-10 grid md:grid-cols-2 gap-20 items-center">
-          <div className="aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 flex items-center justify-center">
-            <div className="text-center text-gray-500">
-              <div className="text-6xl font-[900] tracking-[-0.04em] text-gray-600">JC</div>
-              <div className="text-sm mt-2">JEONGSEED</div>
+          <FadeIn>
+            <div className="aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 flex items-center justify-center">
+              <div className="text-center text-gray-500">
+                <div className="text-6xl font-[900] tracking-[-0.04em] text-gray-600">JC</div>
+                <div className="text-sm mt-2">JEONGSEED</div>
+              </div>
             </div>
-          </div>
+          </FadeIn>
+          <FadeIn delay={200}>
           <div>
             <div className="text-xs font-semibold tracking-[0.15em] text-[var(--gray-400)] mb-4">ABOUT</div>
             <h2 className="text-4xl md:text-5xl font-[800] tracking-[-0.03em] leading-[1.15] text-[var(--black)] mb-6">
@@ -137,19 +260,20 @@ export default function Home() {
               ))}
             </div>
           </div>
+          </FadeIn>
         </div>
       </section>
 
       {/* ===== SERVICES ===== */}
       <section className="py-28 bg-[var(--gray-50)]" id="services">
         <div className="max-w-[1280px] mx-auto px-10">
-          <div className="text-center mb-16">
+          <FadeIn className="text-center mb-16">
             <div className="text-xs font-semibold tracking-[0.15em] text-[var(--gray-400)] mb-4">SERVICES</div>
             <h2 className="text-4xl md:text-5xl font-[800] tracking-[-0.03em] leading-[1.15] text-[var(--black)] mb-4">
               솔로프리너에게 필요한<br />모든 도구, 한 곳에
             </h2>
             <p className="text-base text-[var(--gray-500)]">AI 티 나지 않는, 실무에 바로 쓸 수 있는 도구들</p>
-          </div>
+          </FadeIn>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
@@ -216,6 +340,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ===== INTERACTIVE VIDEO ===== */}
+      <InteractiveVideo />
+
       {/* ===== RESULTS ===== */}
       <section className="py-28 bg-[var(--gray-900)]" id="results">
         <div className="max-w-[1280px] mx-auto px-10 text-center">
@@ -258,14 +385,55 @@ export default function Home() {
       </section>
 
       {/* ===== FOOTER ===== */}
-      <footer className="py-12 border-t border-[var(--gray-200)]">
-        <div className="max-w-[1280px] mx-auto px-10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="text-sm text-[var(--gray-400)]">
-            &copy; 2025 JEONGSEED. All rights reserved.
+      <footer className="py-16 bg-[var(--gray-900)] text-[var(--gray-400)]">
+        <div className="max-w-[1280px] mx-auto px-10">
+          <div className="grid md:grid-cols-3 gap-12 mb-12">
+            {/* Brand */}
+            <div>
+              <div className="text-xl font-[800] tracking-tight text-white mb-3">JEONGSEED</div>
+              <p className="text-sm leading-relaxed">솔로프리너를 위한 올인원 AI 도구</p>
+            </div>
+            {/* Links */}
+            <div className="flex gap-16">
+              <div>
+                <div className="text-xs font-semibold tracking-[0.1em] text-[var(--gray-500)] mb-4">메뉴</div>
+                <div className="flex flex-col gap-3 text-sm">
+                  <a href="#about" className="hover:text-white transition-colors">소개</a>
+                  <a href="#services" className="hover:text-white transition-colors">서비스</a>
+                  <Link href="/studio" className="hover:text-white transition-colors">AI 스튜디오</Link>
+                </div>
+              </div>
+              <div>
+                <div className="text-xs font-semibold tracking-[0.1em] text-[var(--gray-500)] mb-4">소셜</div>
+                <div className="flex flex-col gap-3 text-sm">
+                  <a href="https://instagram.com/jseed_money" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Instagram</a>
+                  <a href="https://youtube.com/@jseed_money" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">YouTube</a>
+                </div>
+              </div>
+            </div>
+            {/* Contact */}
+            <div>
+              <div className="text-xs font-semibold tracking-[0.1em] text-[var(--gray-500)] mb-4">연락처</div>
+              <div className="text-sm space-y-2">
+                <p>info@trenders.kr</p>
+              </div>
+            </div>
           </div>
-          <div className="flex gap-6">
-            <a href="/privacy" className="text-sm text-[var(--gray-400)] hover:text-[var(--gray-600)]">개인정보처리방침</a>
-            <a href="/terms" className="text-sm text-[var(--gray-400)] hover:text-[var(--gray-600)]">이용약관</a>
+
+          {/* Company Info */}
+          <div className="border-t border-[var(--gray-800)] pt-8">
+            <div className="text-xs text-[var(--gray-600)] space-y-1 mb-6">
+              <p>(주) 트렌더스 컴퍼니 | 대표 정성우 | 사업자등록번호 424-87-03941</p>
+            </div>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="text-xs text-[var(--gray-600)]">
+                &copy; 2026 (주) 트렌더스 컴퍼니. All rights reserved.
+              </div>
+              <div className="flex gap-6">
+                <a href="/privacy" className="text-xs text-[var(--gray-600)] hover:text-[var(--gray-400)] transition-colors">개인정보처리방��</a>
+                <a href="/terms" className="text-xs text-[var(--gray-600)] hover:text-[var(--gray-400)] transition-colors">이용약관</a>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
