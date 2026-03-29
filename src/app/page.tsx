@@ -163,8 +163,7 @@ export default function Home() {
             <a href="#about" className="text-sm font-medium text-[var(--gray-600)] hover:text-[var(--black)] transition-colors">소개</a>
             <a href="#services" className="text-sm font-medium text-[var(--gray-600)] hover:text-[var(--black)] transition-colors">서비스</a>
             <a href="#video" className="text-sm font-medium text-[var(--gray-600)] hover:text-[var(--black)] transition-colors">영상</a>
-            <a href="#challenge" className="text-sm font-medium text-[var(--gray-600)] hover:text-[var(--black)] transition-colors">릴뿌챌</a>
-            <Link href="/studio" className="text-sm font-medium text-[var(--gray-600)] hover:text-[var(--black)] transition-colors">AI 스튜디오</Link>
+<Link href="/studio" className="text-sm font-medium text-[var(--gray-600)] hover:text-[var(--black)] transition-colors">AI 스튜디오</Link>
             <a href="#contact" className="bg-[var(--black)] text-white px-6 py-2.5 rounded-md font-semibold text-sm hover:opacity-85 transition-opacity">시작하기</a>
           </div>
         </div>
@@ -365,39 +364,6 @@ export default function Home() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ===== 릴뿌챌 티저 ===== */}
-      <section className="py-28 bg-[var(--gray-50)]" id="challenge">
-        <div className="max-w-[1280px] mx-auto px-10">
-          <FadeIn>
-            <div className="bg-[var(--gray-900)] text-white rounded-2xl p-12 md:p-16 text-center relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-60 h-60 bg-gradient-to-bl from-white/5 to-transparent rounded-bl-full" />
-              <div className="relative">
-                <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5 text-xs font-semibold text-white/80 mb-6">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  4월 6일 START
-                </div>
-                <h2 className="text-3xl md:text-5xl font-[800] tracking-[-0.03em] leading-[1.15] mb-4">
-                  릴뿌챌<br />
-                  <span className="text-xl md:text-2xl font-[600] text-[var(--gray-400)]">릴스 뿌시기 챌린지</span>
-                </h2>
-                <p className="text-sm md:text-base text-[var(--gray-400)] max-w-lg mx-auto leading-relaxed mb-8">
-                  4주간 주 2회 릴스(또는 캐러셀) 올리기 미션.<br />
-                  OT 특강 + 1:1 피드백 + 오프라인 모임 + 릴스크립트 무제한.<br />
-                  혼자가 아닌 환경에서 함께 성장하세요.
-                </p>
-                <Link
-                  href="/challenge"
-                  className="inline-flex items-center gap-2 bg-white text-[var(--black)] px-8 py-4 rounded-xl font-[800] text-base hover:bg-[var(--gray-100)] transition-colors"
-                >
-                  자세히 보기
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </Link>
-              </div>
-            </div>
-          </FadeIn>
         </div>
       </section>
 
