@@ -424,6 +424,7 @@ export default function ChallengePage() {
                   <div className="space-y-4">
                     {[
                       "기본 참가 혜택 전부 포함",
+                      "1개월 1:1 피드백 포함 (옵션A 포함)",
                       "1:1 줌 컨설팅 (3시간)",
                       "사업자 · 자영업자 · 브랜딩 고민 맞춤 상담",
                       "계정 방향성 · 주제 설계",
