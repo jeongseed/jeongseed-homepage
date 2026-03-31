@@ -95,7 +95,7 @@ export default function ChallengePage() {
             <FadeIn>
               <div className="text-center mb-12">
                 <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 rounded-full px-4 py-1.5 text-xs font-semibold text-red-600 mb-6">
-                  4월 6일 START
+                  4월 5일 모집 마감
                 </div>
                 <h1 className="text-4xl md:text-6xl font-[900] tracking-[-0.04em] leading-[1.1] text-[var(--black)] mb-4">
                   1일 1릴스 강요하는<br />챌린지가 아닙니다
@@ -497,7 +497,7 @@ export default function ChallengePage() {
                 <h3 className="text-2xl md:text-3xl font-[800] text-white mb-3">
                   릴뿌챌 신청하기
                 </h3>
-                <p className="text-sm text-[var(--gray-400)] mb-2">4월 6일 시작 · 선착순 마감</p>
+                <p className="text-sm text-[var(--gray-400)] mb-2">4월 5일 모집 마감 · 4월 6일 시작</p>
                 <p className="text-xs text-[var(--gray-500)] mb-8">
                   &quot;잘하려고 멈추지 말고, 일단 올리는 사람이 되어 봅시다.&quot;
                 </p>
